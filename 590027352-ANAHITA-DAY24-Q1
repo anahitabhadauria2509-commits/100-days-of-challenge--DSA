@@ -1,0 +1,49 @@
+Problem: Delete First Occurrence of a Key - Implement using linked list with dynamic memory allocation.
+
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+void deleteKey(struct Node** head, int key) {
+    struct Node *curr = *head, *prev = NULL;
+
+    // Search for the key
+    while (curr != NULL && curr->data != key) {
+        prev = curr;
+        curr = curr->next;
+    }
+
+    // If key was found, unlink it and free memory
+    if (curr != NULL) {
+        if (prev == NULL) *head = curr->next; // Key was at the start
+        else prev->next = curr->next;         // Key was in middle/end
+        free(curr);
+    }
+}
+
+int main() {
+    int n, key;
+    struct Node *head = NULL, *tail = NULL;
+
+    scanf("%d", &n);
+    for (int i = 0; i < n; i++) {
+        int val; scanf("%d", &val);
+        struct Node* temp = malloc(sizeof(struct Node));
+        temp->data = val; temp->next = NULL;
+        if (!head) head = tail = temp;
+        else { tail->next = temp; tail = temp; }
+    }
+
+    scanf("%d", &key);
+    deleteKey(&head, key);
+
+    // Print result
+    for (struct Node* t = head; t; t = t->next)
+        printf("%d%c", t->data, t->next ? ' ' : '\n');
+
+    return 0;
+}
