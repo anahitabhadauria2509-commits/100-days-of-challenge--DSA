@@ -1,0 +1,46 @@
+Problem: Doubly Linked List Insertion and Traversal - Implement using linked list with dynamic memory allocation.
+
+#include <stdio.h>
+#include <stdlib.h>
+
+// 1. Define the Doubly Linked List Node
+struct Node {
+    int data;
+    struct Node* next;
+    struct Node* prev;
+};
+
+int main() {
+    int n, val;
+    struct Node *head = NULL, *tail = NULL;
+
+    if (scanf("%d", &n) != 1) return 0;
+
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &val);
+        
+        // 2. Allocate memory for a new node
+        struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+        newNode->data = val;
+        newNode->next = NULL;
+        newNode->prev = NULL;
+
+        // 3. Insert into the list
+        if (head == NULL) {
+            head = tail = newNode;
+        } else {
+            tail->next = newNode;
+            newNode->prev = tail; // Link back to the current tail
+            tail = newNode;       // Move tail to the new node
+        }
+    }
+
+    // 4. Forward Traversal
+    struct Node* curr = head;
+    while (curr != NULL) {
+        printf("%d%s", curr->data, curr->next ? " " : "");
+        curr = curr->next;
+    }
+
+    return 0;
+}
