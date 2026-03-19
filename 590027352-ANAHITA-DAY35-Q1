@@ -1,0 +1,41 @@
+Problem: Queue Using Array - Implement using linked list with dynamic memory allocation.
+
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+int main() {
+    int n, val;
+    struct Node *head = NULL, *tail = NULL;
+
+    // 1. Get number of elements
+    scanf("%d", &n);
+
+    // 2. Enqueue: Create nodes and link them
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &val);
+        struct Node* newNode = malloc(sizeof(struct Node));
+        newNode->data = val;
+        newNode->next = NULL;
+
+        if (head == NULL) {
+            head = tail = newNode; // First element
+        } else {
+            tail->next = newNode;  // Link old tail to new node
+            tail = newNode;        // Move tail to the end
+        }
+    }
+
+    // 3. Display: Walk from head to NULL
+    struct Node* temp = head;
+    while (temp != NULL) {
+        printf("%d ", temp->data);
+        temp = temp->next;
+    }
+
+    return 0;
+}
