@@ -1,0 +1,61 @@
+Problem: Evaluate Postfix Expression - Implement using linked list with dynamic memory allocation.
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+// Node for dynamic memory allocation
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+// Stack operations
+void push(struct Node** top, int val) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    if (!newNode) return;
+    newNode->data = val;
+    newNode->next = *top;
+    *top = newNode;
+}
+
+int pop(struct Node** top) {
+    if (*top == NULL) return 0;
+    struct Node* temp = *top;
+    int val = temp->data;
+    *top = (*top)->next;
+    free(temp); // Free allocated memory
+    return val;
+}
+
+int evaluatePostfix(char* exp) {
+    struct Node* stack = NULL;
+    char* token = strtok(exp, " "); // Split by spaces
+
+    while (token != NULL) {
+        // Check if token is a number (handles negative numbers)
+        if (isdigit(token[0]) || (token[0] == '-' && isdigit(token[1]))) {
+            push(&stack, atoi(token));
+        } else {
+            // Operator encountered: pop two operands
+            int op2 = pop(&stack);
+            int op1 = pop(&stack);
+            
+            switch (token[0]) {
+                case '+': push(&stack, op1 + op2); break;
+                case '-': push(&stack, op1 - op2); break;
+                case '*': push(&stack, op1 * op2); break;
+                case '/': push(&stack, op1 / op2); break;
+            }
+        }
+        token = strtok(NULL, " ");
+    }
+    return pop(&stack);
+}
+
+int main() {
+    char input[] = "2 3 1 * + 9 -";
+    printf("Result: %d\n", evaluatePostfix(input)); // Output: -4
+    return 0;
+}
