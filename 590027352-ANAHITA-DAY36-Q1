@@ -1,0 +1,49 @@
+Problem: Circular Queue Using Array - Implement using linked list with dynamic memory allocation.
+
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+int main() {
+    int n, m, val;
+    struct Node *front = NULL, *rear = NULL;
+
+    // 1. Enqueue N elements
+    scanf("%d", &n);
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &val);
+        struct Node* newNode = malloc(sizeof(struct Node));
+        newNode->data = val;
+        newNode->next = NULL;
+
+        if (front == NULL) {
+            front = rear = newNode;
+        } else {
+            rear->next = newNode;
+            rear = newNode;
+        }
+    }
+
+    // 2. Dequeue M elements
+    scanf("%d", &m);
+    for (int i = 0; i < m; i++) {
+        if (front != NULL) {
+            struct Node* temp = front;
+            front = front->next;
+            free(temp);
+        }
+    }
+
+    // 3. Display remaining elements
+    struct Node* temp = front;
+    while (temp != NULL) {
+        printf("%d ", temp->data);
+        temp = temp->next;
+    }
+
+    return 0;
+}
