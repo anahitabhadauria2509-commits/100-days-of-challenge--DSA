@@ -1,0 +1,59 @@
+Problem Statement:
+Implement a Priority Queue using an array. An element with smaller value has higher priority.
+
+
+#include <stdio.h>
+#include <string.h>
+
+int pq[100]; // Fixed-size array for simplicity
+int size = 0;
+
+void insert(int x) {
+    int i = size - 1;
+    // Shift elements to the right to keep array sorted in descending order
+    // This keeps the smallest element (highest priority) at the very end
+    while (i >= 0 && pq[i] < x) {
+        pq[i + 1] = pq[i];
+        i--;
+    }
+    pq[i + 1] = x;
+    size++;
+}
+
+void delete() {
+    if (size == 0) {
+        printf("-1\n");
+    } else {
+        printf("%d\n", pq[size - 1]); // Smallest is at the end
+        size--;
+    }
+}
+
+void peek() {
+    if (size == 0) {
+        printf("-1\n");
+    } else {
+        printf("%d\n", pq[size - 1]);
+    }
+}
+
+int main() {
+    int N;
+    scanf("%d", &N);
+
+    while (N--) {
+        char op[10];
+        scanf("%s", op);
+
+        if (strcmp(op, "insert") == 0) {
+            int x;
+            scanf("%d", &x);
+            insert(x);
+        } else if (strcmp(op, "delete") == 0) {
+            delete();
+        } else if (strcmp(op, "peek") == 0) {
+            peek();
+        }
+    }
+    return 0;
+}
