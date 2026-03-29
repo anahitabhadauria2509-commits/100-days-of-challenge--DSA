@@ -1,0 +1,74 @@
+Problem Statement:
+Implement a Queue using a linked list supporting enqueue and dequeue operations.
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// 1. Define the Node and Queue structure
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+struct Queue {
+    struct Node *front, *rear;
+};
+
+// 2. Function to create a new node
+struct Node* createNode(int value) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    if (!newNode) return NULL;
+    newNode->data = value;
+    newNode->next = NULL;
+    return newNode;
+}
+
+// 3. Enqueue operation: Add to the rear
+void enqueue(struct Queue* q, int value) {
+    struct Node* newNode = createNode(value);
+    if (q->rear == NULL) {
+        q->front = q->rear = newNode;
+        return;
+    }
+    q->rear->next = newNode;
+    q->rear = newNode;
+}
+
+// 4. Dequeue operation: Remove from the front
+void dequeue(struct Queue* q) {
+    if (q->front == NULL) {
+        printf("-1\n");
+        return;
+    }
+    struct Node* temp = q->front;
+    printf("%d\n", temp->data);
+    q->front = q->front->next;
+    
+    if (q->front == NULL) {
+        q->rear = NULL;
+    }
+    free(temp);
+}
+
+int main() {
+    struct Queue q = {NULL, NULL};
+    int n, value;
+    char operation[20];
+
+    // Read the number of operations
+    if (scanf("%d", &n) != 1) return 0;
+
+    for (int i = 0; i < n; i++) {
+        scanf("%s", operation);
+        if (strcmp(operation, "enqueue") == 0) {
+            scanf("%d", &value);
+            enqueue(&q, value);
+        } else if (strcmp(operation, "dequeue") == 0) {
+            dequeue(&q);
+        }
+    }
+
+    return 0;
+}
