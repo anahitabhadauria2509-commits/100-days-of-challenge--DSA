@@ -1,0 +1,40 @@
+Problem Statement:
+Given a queue of integers, reverse the queue using a stack.
+
+
+#include <stdio.h>
+
+int main() {
+    int n;
+    
+    // 1. Get the size of the queue
+    if (scanf("%d", &n) != 1) return 0;
+
+    int queue[n];
+    int stack[n];
+    int top = -1;
+
+    // 2. Input elements into the "Queue"
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &queue[i]);
+    }
+
+    // 3. Move from Queue to Stack (Reverse step)
+    // Dequeue from front (index 0) and Push to Stack
+    for (int i = 0; i < n; i++) {
+        stack[++top] = queue[i];
+    }
+
+    // 4. Move from Stack back to Queue
+    // Pop from Stack and Enqueue back
+    for (int i = 0; i < n; i++) {
+        queue[i] = stack[top--];
+    }
+
+    // 5. Print the reversed result
+    for (int i = 0; i < n; i++) {
+        printf("%d%s", queue[i], (i == n - 1 ? "" : " "));
+    }
+
+    return 0;
+}
