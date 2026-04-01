@@ -1,0 +1,40 @@
+Problem Statement:
+Find the height (maximum depth) of a given binary tree.
+
+
+#include <stdio.h>
+
+// A simple function to get the max of two numbers
+int max(int a, int b) {
+    return (a > b) ? a : b;
+}
+
+// Recursive function using the array indices
+// i is the current index, n is total elements
+int getHeight(int arr[], int n, int i) {
+    // If index is out of bounds or value is NULL (-1)
+    if (i >= n || arr[i] == -1) {
+        return 0;
+    }
+
+    // Left child is at 2*i + 1, Right child is at 2*i + 2
+    int left = getHeight(arr, n, 2 * i + 1);
+    int right = getHeight(arr, n, 2 * i + 2);
+
+    return 1 + max(left, right);
+}
+
+int main() {
+    int n;
+    if (scanf("%d", &n) != 1) return 0;
+
+    int arr[n];
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &arr[i]);
+    }
+
+    // Start recursion from the root (index 0)
+    printf("%d\n", getHeight(arr, n, 0));
+
+    return 0;
+}
