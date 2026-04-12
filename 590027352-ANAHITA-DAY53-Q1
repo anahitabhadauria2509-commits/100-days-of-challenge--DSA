@@ -1,0 +1,121 @@
+Problem Statement:
+Given a binary tree, print its vertical order traversal. Nodes that lie on the same vertical line should be printed together from top to bottom and from left to right.
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Node {
+    int data, hd;
+    struct Node *left, *right;
+};
+
+struct Node* newNode(int val) {
+    if (val == -1) return NULL;
+    struct Node* temp = (struct Node*)malloc(sizeof(struct Node));
+    temp->data = val;
+    temp->left = temp->right = NULL;
+    return temp;
+}
+
+// Map structure to store nodes at each horizontal distance
+struct MapNode {
+    int data;
+    struct MapNode* next;
+};
+
+struct Map {
+    int hd;
+    struct MapNode* list;
+    struct Map *left, *right;
+};
+
+// Insert data into the horizontal distance map
+struct Map* insertMap(struct Map* root, int hd, int data) {
+    if (root == NULL) {
+        struct Map* temp = (struct Map*)malloc(sizeof(struct Map));
+        temp->hd = hd;
+        temp->list = (struct MapNode*)malloc(sizeof(struct MapNode));
+        temp->list->data = data;
+        temp->list->next = NULL;
+        temp->left = temp->right = NULL;
+        return temp;
+    }
+    if (hd < root->hd) root->left = insertMap(root->left, hd, data);
+    else if (hd > root->hd) root->right = insertMap(root->right, hd, data);
+    else {
+        struct MapNode* temp = root->list;
+        while (temp->next) temp = temp->next;
+        temp->next = (struct MapNode*)malloc(sizeof(struct MapNode));
+        temp->next->data = data;
+        temp->next->next = NULL;
+    }
+    return root;
+}
+
+void getVerticalOrder(struct Node* root, int hd, struct Map** mapRoot) {
+    if (!root) return;
+
+    // Use level order to ensure top-to-bottom order for same HD
+    struct Node* q[1000];
+    int h = 0, t = 0;
+    root->hd = hd;
+    q[t++] = root;
+
+    while (h < t) {
+        struct Node* curr = q[h++];
+        *mapRoot = insertMap(*mapRoot, curr->hd, curr->data);
+
+        if (curr->left) {
+            curr->left->hd = curr->hd - 1;
+            q[t++] = curr->left;
+        }
+        if (curr->right) {
+            curr->right->hd = curr->hd + 1;
+            q[t++] = curr->right;
+        }
+    }
+}
+
+void printMap(struct Map* root) {
+    if (!root) return;
+    printMap(root->left);
+    struct MapNode* temp = root->list;
+    while (temp) {
+        printf("%d%s", temp->data, temp->next ? " " : "");
+        temp = temp->next;
+    }
+    printf("\n");
+    printMap(root->right);
+}
+
+int main() {
+    int n;
+    if (scanf("%d", &n) != 1) return 0;
+    int arr[n];
+    for (int i = 0; i < n; i++) scanf("%d", &arr[i]);
+
+    struct Node* root = newNode(arr[0]);
+    struct Node* q[n];
+    int h = 0, t = 0;
+    if (root) q[t++] = root;
+
+    int i = 1;
+    while (i < n && h < t) {
+        struct Node* curr = q[h++];
+        if (i < n) {
+            curr->left = newNode(arr[i++]);
+            if (curr->left) q[t++] = curr->left;
+        }
+        if (i < n) {
+            curr->right = newNode(arr[i++]);
+            if (curr->right) q[t++] = curr->right;
+        }
+    }
+
+    struct Map* mapRoot = NULL;
+    getVerticalOrder(root, 0, &mapRoot);
+    printMap(mapRoot);
+
+    return 0;
+}
