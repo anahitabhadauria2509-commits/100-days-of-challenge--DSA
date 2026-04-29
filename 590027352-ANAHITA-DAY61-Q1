@@ -1,0 +1,43 @@
+#include <stdio.h>
+
+int main() {
+    int n, m, isDirected;
+    
+    // Read number of vertices and edges
+    if (scanf("%d %d", &n, &m) != 2) return 0;
+    
+    // Ask user for graph type (0 for undirected, 1 for directed)
+    // For this example, we'll assume undirected unless specified
+    isDirected = 0; 
+
+    int adj[n][n];
+
+    // Initialize matrix with 0
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            adj[i][j] = 0;
+        }
+    }
+
+    // Read edges
+    for (int i = 0; i < m; i++) {
+        int u, v;
+        scanf("%d %d", &u, &v);
+        
+        // Adjust for 0-based indexing if input is 1-based
+        adj[u-1][v-1] = 1;
+        if (!isDirected) {
+            adj[v-1][u-1] = 1;
+        }
+    }
+
+    // Print the adjacency matrix
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            printf("%d ", adj[i][j]);
+        }
+        printf("\n");
+    }
+
+    return 0;
+}
