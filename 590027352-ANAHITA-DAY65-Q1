@@ -1,0 +1,52 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+#define MAX 100
+
+int adj[MAX][MAX];
+bool visited[MAX];
+int V, E;
+
+bool isCyclicUtil(int v, int parent) {
+    visited[v] = true;
+
+    for (int i = 0; i < V; i++) {
+        if (adj[v][i]) {
+            // If adjacent node is not visited, recurse
+            if (!visited[i]) {
+                if (isCyclicUtil(i, v))
+                    return true;
+            }
+            // If visited and not parent, cycle found
+            else if (i != parent) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool hasCycle() {
+    for (int i = 0; i < V; i++) visited[i] = false;
+
+    for (int i = 0; i < V; i++) {
+        if (!visited[i]) {
+            if (isCyclicUtil(i, -1))
+                return true;
+        }
+    }
+    return false;
+}
+
+int main() {
+    // Example Input: V=3, E=3 (Triangle graph)
+    V = 3;
+    adj[0][1] = adj[1][0] = 1;
+    adj[1][2] = adj[2][1] = 1;
+    adj[2][0] = adj[0][2] = 1;
+
+    if (hasCycle()) printf("YES\n");
+    else printf("NO\n");
+
+    return 0;
+}
