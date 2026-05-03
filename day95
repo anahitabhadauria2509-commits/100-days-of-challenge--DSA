@@ -1,0 +1,80 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX 100
+
+// Node for bucket linked list
+struct Node {
+    float data;
+    struct Node* next;
+};
+
+// Insert in sorted order (insertion sort inside bucket)
+void insertSorted(struct Node** bucket, float value) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = value;
+    newNode->next = NULL;
+
+    if (*bucket == NULL || (*bucket)->data >= value) {
+        newNode->next = *bucket;
+        *bucket = newNode;
+        return;
+    }
+
+    struct Node* current = *bucket;
+
+    while (current->next != NULL && current->next->data < value) {
+        current = current->next;
+    }
+
+    newNode->next = current->next;
+    current->next = newNode;
+}
+
+void bucketSort(float arr[], int n) {
+    struct Node* buckets[n];
+
+    // Initialize buckets
+    for (int i = 0; i < n; i++)
+        buckets[i] = NULL;
+
+    // Distribute elements
+    for (int i = 0; i < n; i++) {
+        int index = n * arr[i];
+        insertSorted(&buckets[index], arr[i]);
+    }
+
+    // Concatenate buckets
+    int k = 0;
+    for (int i = 0; i < n; i++) {
+        struct Node* current = buckets[i];
+
+        while (current != NULL) {
+            arr[k++] = current->data;
+            current = current->next;
+        }
+    }
+}
+
+int main() {
+    int n;
+    scanf("%d", &n);
+
+    float arr[n];
+
+    // Input numbers in [0,1)
+    for (int i = 0; i < n; i++) {
+        scanf("%f", &arr[i]);
+    }
+
+    bucketSort(arr, n);
+
+    // Output sorted array
+    for (int i = 0; i < n; i++) {
+        printf("%.3f ", arr[i]);
+    }
+
+    printf("\n");
+
+    return 0;
+}
