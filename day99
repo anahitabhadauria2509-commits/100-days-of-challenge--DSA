@@ -1,0 +1,45 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    int position;
+    int speed;
+} Car;
+
+// Sort by position descending
+int compare(const void *a, const void *b) {
+    return ((Car *)b)->position - ((Car *)a)->position;
+}
+
+int main() {
+    int n, target;
+    scanf("%d %d", &n, &target);
+
+    Car cars[n];
+
+    for (int i = 0; i < n; i++) {
+        scanf("%d %d", &cars[i].position, &cars[i].speed);
+    }
+
+    // Sort by position descending
+    qsort(cars, n, sizeof(Car), compare);
+
+    int fleets = 0;
+    double lastTime = 0;
+
+    for (int i = 0; i < n; i++) {
+
+        double time = (double)(target - cars[i].position) / cars[i].speed;
+
+        // New fleet
+        if (time > lastTime) {
+            fleets++;
+            lastTime = time;
+        }
+        // else: joins existing fleet
+    }
+
+    printf("%d\n", fleets);
+
+    return 0;
+}
