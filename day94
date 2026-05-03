@@ -1,0 +1,52 @@
+#include <stdio.h>
+#include <string.h>
+
+int main() {
+    int n;
+    scanf("%d", &n);
+
+    int arr[n];
+
+    // Input array
+    int max = 0;
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &arr[i]);
+        if (arr[i] > max)
+            max = arr[i];
+    }
+
+    // Frequency array
+    int freq[max + 1];
+    memset(freq, 0, sizeof(freq));
+
+    for (int i = 0; i < n; i++) {
+        freq[arr[i]]++;
+    }
+
+    // Prefix sum (cumulative frequency)
+    for (int i = 1; i <= max; i++) {
+        freq[i] += freq[i - 1];
+    }
+
+    // Output array (stable sorting)
+    int output[n];
+
+    for (int i = n - 1; i >= 0; i--) {
+        output[freq[arr[i]] - 1] = arr[i];
+        freq[arr[i]]--;
+    }
+
+    // Copy back to original array
+    for (int i = 0; i < n; i++) {
+        arr[i] = output[i];
+    }
+
+    // Print sorted array
+    for (int i = 0; i < n; i++) {
+        printf("%d ", arr[i]);
+    }
+
+    printf("\n");
+
+    return 0;
+}
